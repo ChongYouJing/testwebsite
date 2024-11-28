@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>A TEST</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="highlight/styles/github.min.css">
+    <link rel="stylesheet" href="testing.css">
+    <script src="highlight/highlight.min.js"></script>
+    
+    <script src="u_functions.js"></script>
+    <script src="setup_nav.js"></script>
+    
+    <script src="testData.js"></script>
+</head>
+
+<body>
+    <nav id="nav">
+        <!-- <button id="nav-toggle" onclick="toggleNav(isNavOpen, 'nav-ul', 'nav-open', 'nav-closed')">Toggle Nav</button> -->
+        <input type="checkbox" id="nav-toggle">
+        <label for="nav-toggle" id="nav-toggle-label">nav</label>
+        <ul id="nav-ul">
+        </ul>
+    </nav>
+    <aside id="aside">
+        <!-- <button id="aside-toggle" onclick="toggleNav(isAsideOpen, 'aside-ul', 'aside-open', 'aside-closed')">Toggle
+            Aside</button> -->
+        <input type="checkbox" id="aside-toggle">
+        <label for="aside-toggle" id="aside-toggle-label">aside</label>
+        <ul id="aside-ul">
+        </ul>
+    </aside>
+    <div id="nav-buffer">
+    </div>
+    <main id="main">
+        <section id="content-grid">
+            <div id="content-center">
+            </div>
+        </section>
+    </main>
+</body>
+<script>
+    /**
+                        _                                _       _                    
+                       (_) __ ___   ____ _ ___  ___ _ __(_)_ __ | |_                  
+      _____ _____ _____| |/ _` \ \ / / _` / __|/ __| '__| | '_ \| __|____ _____ _____ 
+     |_____|_____|_____| | (_| |\ V / (_| \__ \ (__| |  | | |_) | ||_____|_____|_____|
+                      _/ |\__,_| \_/ \__,_|___/\___|_|  |_| .__/ \__|                 
+                     |__/                                 |_|                         
+    */
+
+
+    let isNavOpen = new BoolRef(false);
+    let isAsideOpen = new BoolRef(false);
+
+    setupNav()
+
+    let contentCenter = document.getElementById("content-center")
+
+
+    let contentheader_htmlbasics = createSectionHeader("HTML Basics")
+    let content_htmlbasicstructure = createPanelPair(
+        [
+            createExplain("<html>", "Root element of an HTML document."),
+            createExplain("<head>", "Metadata about the document."),
+            createExplain("<title>", "Document title (appears in the browser tab)."),
+            createExplain("<meta>", "Metadata (e.g., character encoding, viewport settings)."),
+            createExplain("<body>", "Main content of the webpage."),
+        ],
+        [create_hljs_syntaxHighlightCode(testHTML, 'html')]
+    )
+
+
+    let h1Eg =
+        "<h1>Hello World</h1>\n" +
+        "<h2>Hello World</h2>\n" +
+        "<h3>Hello World</h3>\n" +
+        "<h4>Hello World</h4>\n" +
+        "<h5>Hello World</h5>\n" +
+        "<h6>Hello World</h6>"
+    let content_h1to6 = createPanelPair(
+        [
+            createExplain("<h1-6>", "Create a header. Use <h1> for the top most header, <h6> for the inner most header."),
+            create_hljs_syntaxHighlightCode(h1Eg, 'xml')
+        ],
+        [createRealHTML(h1Eg)]
+
+    )
+
+
+    let paraEg = `<p>This is a paragraph</p>`
+    let content_para = createPanelPair(
+        [
+            createExplain("<p>", "Creates a generic container for a block of text."),
+            create_hljs_syntaxHighlightCode(paraEg, 'xml')
+        ],
+        [createRealHTML(paraEg)]
+
+    )
+
+    let brEg = `ipsum <br/> lorem`
+    let content_br = createPanelPair(
+        [
+            createExplain("<br/>", "Creates a line break."),
+            create_hljs_syntaxHighlightCode(
+                brEg, 'xml')
+        ],
+        [
+            createRealHTML(brEg)
+        ]
+    )
+
+    let hrEg = `section 1<hr/>section 2`
+    let content_hr = createPanelPair(
+        [
+            createExplain("<hr/>", "Creates a horizontal line."),
+            create_hljs_syntaxHighlightCode(
+                hrEg, 'xml')
+        ],
+        [
+            createRealHTML(hrEg)
+        ]
+    )
+
+    let commentEg = `<!--This is a comment-->`
+    let content_comment = createPanelPair(
+        [
+            createExplain("<!-- ... -->", "Creates a comment in the HTML DOM. Comments are not rendered in the browser."),
+            
+        ],
+        [
+        create_hljs_syntaxHighlightCode(
+            commentEg, 'xml')
+        ]
+    )
+
+    let contentheader_textformatting = createSectionHeader("Text Formatting")
+
+    let textFormattingTagArr = [
+        "<b>",
+        "<strong>",
+        "<i>",
+        "<em>",
+        "<u>",
+        "<ins>",
+        "<del>",
+        "<s>",
+        "<sub>",
+        "<sup>",
+        "<mark>",
+        "<small>",
+    ]
+    let textForattingDescArr = [
+        "Bold text.",
+        "Strong text.",
+        "Italic text.",
+        "Emphasised text.",
+        "Underline text.",
+        "Inserted text.",
+        "Deleted text.",
+        "Strikethrough text.",
+        "Subscript text.",
+        "Superscript text.",
+        "Marked text.",
+        "Small text.",
+    ]
+    let textFormattingEg = [
+        "<b>bold</b>",
+        "<strong>strong</strong>",
+        "<i>italic</i>",
+        "<em>emphasised</em>",
+        "<u>underline</u>",
+        "<ins>inserted</ins>",
+        "<del>deleted</del>",
+        "<s>strikethrough</s>",
+        "sub<sub>script</sub>",
+        "super<sup>script</sup>",
+        "<mark>marked</mark>",
+        "<small>small</small>",
+    ]
+
+    let newcontent_textFormatting = textFormattingTagArr.map((tag, index) => {
+        let d = createPanelPair([
+        createExplain(tag, textForattingDescArr[index]),
+        create_hljs_syntaxHighlightCode(textFormattingEg[index], 'xml')
+        ], [
+            createRealHTML(textFormattingEg[index])
+        ])
+        return d
+    })
+
+
+            let ulEg = `<ul>
+    <li>Milk</li>
+    <li>Cheese
+        <ul>
+            <li>Blue cheese</li>
+            <li>Feta</li>
+        </ul>
+    </li>
+</ul>`
+
+let content_ul = createPanelPair(
+    [
+        createExplain("<ul>", "Creates an unordered list. You can change the bullets with the 'list-style' css attribute."),
+        createExplain("<li>", "List item"),
+            create_hljs_syntaxHighlightCode(ulEg, 'xml')
+    ],
+    [
+        createRealHTML(ulEg)
+    ]
+)
+
+
+
+let olEg = `<ol> 
+    <li>Crack eggs into bowl</li>
+    <li>Pour flour into bowl</li>
+    <li>Mix like your life depends on it</li>
+</ol>`
+
+let content_ol = createPanelPair(
+    [
+        createExplain("<ol>", "Creates an ordered list. You can change the numbering with the 'type' css attribute."),
+            createExplain("<li>", "List item."),
+        
+        create_hljs_syntaxHighlightCode(olEg, 'xml')
+    ],
+    [
+        createRealHTML(olEg)
+    ]
+)
+
+let dlEg = `<dl>
+    <dt>descriptionTerm</dt>
+    <dd>descriptionDetails</dd>
+    <dt>Milk</dt>
+    <dd>white cold drink</dd>
+</dl>`
+
+let content_dl = createPanelPair(
+    [
+        createExplain("<dl>", "Creates a description list."),
+        create_hljs_syntaxHighlightCode(dlEg, 'xml')
+    ],
+    [
+        createRealHTML(dlEg)
+    ]
+)
+
+let contentheader_linksAndMedia = createSectionHeader("Links and Media")
+
+let aEg = `<a href="https://www.google.com">Google</a>`
+
+let content_a = createPanelPair(
+    [
+        createExplain("<a>", "Creates a link (anchor)."),
+        create_hljs_syntaxHighlightCode(aEg, 'xml')
+    ],
+    [
+        createRealHTML(aEg)
+    ]
+)
+
+let imgEg = `<img src="yoda_doordonot.jpeg" alt="Yoda" 
+style="min-width: 200px; width: 100%; max-width: 400px">`
+let content_img = createPanelPair(
+    [
+        createExplain("<img>", "Creates an image."),
+        create_hljs_syntaxHighlightCode(imgEg, 'xml')
+    ],
+    [
+        createRealHTML(imgEg)
+    ]
+)
+
+let audioEg = `<audio controls 
+style="min-width: 320px; width: 100%; max-width: 400px">
+    <source src="eccentric-funny-music-117024.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>`
+
+let content_audio = createPanelPair(
+    [
+        createExplain("<audio>", "Creates an audio player."),
+        create_hljs_syntaxHighlightCode(audioEg, 'xml')
+    ],
+    [
+        createRealHTML(audioEg)
+    ]
+)
+
+let videoEg = `<video controls 
+style="min-width: 200px; width: 100%; max-width: 400px">
+    <source src="kitten_playing.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>`
+
+let content_video = createPanelPair(
+    [
+        createExplain("<video>", "Creates a video player."),
+        create_hljs_syntaxHighlightCode(videoEg, 'xml')
+    ],
+    [
+        createRealHTML(videoEg)
+    ]
+)
+
+let contentheader_tables = createSectionHeader("Tables")
+
+let tableEg = `<table>
+    <caption>Personnel Details</caption>
+    <colgroup>
+        <col span="2" style="background-color:#e0e000">
+        <col style="background-color:#00e000">
+    </colgroup>
+    <thead>
+        <tr>
+            <th>Header 1</th>
+            <th>Header 2</th>
+            <th>Header 3</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr style="background-color:#7777e0">
+            <td>Row 1</td>
+            <td>Cell 2</td>
+            <td>Cell 3</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td>Row 2</td>
+            <td>Footer 2</td>
+            <td>Footer 3</td>
+        </tr>
+    </tfoot>
+</table>`
+
+let content_table = createPanelPair(
+    [
+        createExplain("<table>", "Creates a table."),
+            createExplain("<tr>", "Creates a table row."),
+            createExplain("<th>", "Creates a table header."),
+            createExplain("<td>", "Creates a table data."),
+            createExplain("<caption>", "Creates a table caption."),
+            createExplain("<colgroup>", "Creates a table column group."),
+            createExplain("<col>", "Creates a table column."),
+            createExplain("<thead>", "Creates a table header."),
+            createExplain("<tbody>", "Creates a table body."),
+            createExplain("<tfoot>", "Creates a table footer."),
+        create_hljs_syntaxHighlightCode(tableEg, 'xml')
+    ],
+    [
+        createRealHTML(tableEg)
+    ]
+)
+
+let contentheader_forms = createSectionHeader("Forms")
+
+let formEg_basicInput = `<form>
+    <fieldset class="input-fieldset">
+        <legend>Details - This is a legend</legend>
+                
+                <label for="form-uname">Username</label>
+                <input id="form-uname" class="nice-input" type="text" name="username" placeholder="username placeholder " >
+            <br/>
+                <label for="form-pword">Password</label>
+                <input id="form-pword" class="nice-input" type="password" name="password" placeholder="Password">
+            <br/>
+
+                <label for="form-email">Email</label>
+                <input id="form-email" class="nice-input" type="email" name="email" placeholder="Email">
+            <br/>
+
+                <label for="form-number">Number</label>
+                <input id="form-number"class="nice-input" type="number" name="age" placeholder="Age">
+            <br/>
+
+                <label for="form-tel">Telephone</label>
+                <input id="form-tel" class="nice-input" type="tel" name="tel" placeholder="Tel">
+            <br/>
+
+            <div class="button-group">
+                <input type="reset" value="reset">
+                <input type="submit" value="submit">
+            </div>
+    </fieldset>
+</form>`
+
+let content_forms = createPanelPair(
+    [
+        createExplain("<form>", "Creates a form."),
+            createExplain("<fieldset>", "Creates a form fieldset."),
+            createExplain("<legend>", "Creates a form legend."),
+            createExplain("<label>", "Creates a form label."),
+            createExplain("<input>", "Creates a form input."),
+            createExplain("<button>", "Creates a form button."),
+            createExplain("<select>", "Creates a form select."),
+            createExplain("<option>", "Creates a form option."),
+        create_hljs_syntaxHighlightCode(formEg_basicInput, 'xml')
+    ],
+    [
+        createRealHTML(formEg_basicInput)
+    ]
+)
+
+let formEg_Radio = `<fieldset>
+    <legend>More form inputs</legend>
+    <input id="form-checkbox" type="checkbox" name="checkbox">
+    <label for="form-checkbox">Checkbox: </label>
+    <br/>
+    <input id="form-radio1" type="radio" name="radio">
+    <label for="form-radio1">RadioButton 1: </label>
+    <br/>
+    <input id="form-radio2" type="radio" name="radio">
+    <label for="form-radio2">RadioButton 2: </label>
+    <br/>
+    <select name="select">
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+        <option value="option3">Option 3</option>
+    </select>
+</fieldset>`
+
+let content_forms2 = createPanelPair(
+    [
+        createExplain("<fieldset>", "Creates a form fieldset."),
+            createExplain("<legend>", "Creates a form legend."),
+            createExplain("<label>", "Creates a form label."),
+            createExplain("<input>", "Creates a form input."),
+            createExplain("<button>", "Creates a form button."),
+            createExplain("<select>", "Creates a form select."),
+            createExplain("<option>", "Creates a form option."),
+        create_hljs_syntaxHighlightCode(formEg_Radio, 'xml')
+    ],
+    [
+        createRealHTML(formEg_Radio)
+    ]
+)
+
+let formEg_datetime = `<fieldset class="input-fieldset">
+    <legend>Date and Time inputs</legend>
+    <input class="nice-input" type="datetime-local" name="datetime-local">
+    <br/>
+    <input class="nice-input" type="date" name="date">
+    <br/>
+    <input class="nice-input" type="time" name="time">
+    <br/>
+    <input class="nice-input" type="week" name="week">
+    <br/>
+    <input class="nice-input" type="month" name="month">
+</fieldset>`
+
+let content_forms3 = createPanelPair(
+    [
+        createExplain("<fieldset>", "Creates a form fieldset."),
+            createExplain("<legend>", "Creates a form legend."),
+            createExplain("<label>", "Creates a form label."),
+            createExplain("<input>", "Creates a form input."),
+            createExplain("<button>", "Creates a form button."),
+            createExplain("<select>", "Creates a form select."),
+            createExplain("<option>", "Creates a form option."),
+        create_hljs_syntaxHighlightCode(formEg_datetime, 'xml')
+    ],
+    [
+        createRealHTML(formEg_datetime)
+    ]
+)
+
+let formEg_extras = `<form>
+    <label for="form-range">Slider</label>
+    <input id="form-range" type="range" name="range" min="0" max="100" value="69">
+<br/>
+    <div class="input-fieldset">
+        <div>
+            <div class="input-pair">
+                <label for="form-color">Choose a color: </label>
+                <input id="form-color" class="nice-input" type="color" name="color" placeholder="Color">
+            </div>
+            <div class="input-pair">
+                <label for="form-search">Search Bar: </label><br/>
+                <input id="form-search" class="nice-input" type="search" name="search" placeholder="...">
+            </div>
+            <div class="input-pair">
+                <label for="form-url">Enter a URL: </label>
+                <input id="form-url" class="nice-input" type="url" name="url" placeholder="https://example.com">
+            </div>
+        </div>
+    </div>
+<br/>
+<label for="form-file">Upload a file: </label>
+    <input id="form-file" type="file" name="file" placeholder="File">
+<br/>
+    <textarea class="nice-input" name="textarea" placeholder="Textarea"></textarea>
+    
+<br/>
+    <input type="image" src="blob.svg" height="75px" name="image" placeholder="Image">
+</form>`
+
+let content_forms4 = createPanelPair(
+    [
+        createExplain("<fieldset>", "Creates a form fieldset."),
+            createExplain("<legend>", "Creates a form legend."),
+            createExplain("<label>", "Creates a form label."),
+            createExplain("<input>", "Creates a form input."),
+            createExplain("<button>", "Creates a form button."),
+            createExplain("<select>", "Creates a form select."),
+            createExplain("<option>", "Creates a form option."),
+        create_hljs_syntaxHighlightCode(formEg_extras, 'xml')
+    ],
+    [
+        createRealHTML(formEg_extras)
+    ]
+)
+
+let contentheader_semanticTags = createSectionHeader("Semantic Tags")
+let contentheader_semanticTags_sectioningAndLayout = createSectionHeader("Sectioning and Layout")
+
+let content_semanticTagsArr_sectioningAndLayout = [
+    createExplain("<address>", "Contact information for a person or people, or for an organization."),
+    createExplain("<article>", "Independent, self-contained content that can be independently used or shared. Can be nested within itself."),
+    createExplain("<aside>", "Content that is indirectly related to the main content of the document, or as a sidebar"),
+    createExplain("<header>", "Introductory content or navigational aids."),
+    createExplain("<footer>", "For author, copyright, contact info, sitemap, back-to-top links or related documents"),
+    createExplain("<main>", "Main content of your site. Should only have 1 unhidden <main>"),
+    createExplain("<nav>", "Navigation links."),
+    createExplain("<section>", "Thematic grouping of content. | Divide your content, is a generic element, used if there isn't a more specific element to represent it")
+]
+
+
+    let contentheader_semanticTags_blockTextContent = createSectionHeader("Block Text Content")
+    let content_semanticTagsArr_blockTextContent = [
+        createExplain("<blockquote>", "Defines a section that is quoted from another source"),
+        createExplain("<pre>", "Defines preformatted text"),
+        createExplain("<menu>", "Semantic version of <ul>")
+    ]
+
+
+    let contentheader_semanticTags_inlineTextSemantics = createSectionHeader("Inline Text Semantics")
+    let content_semanticTagsArr_inlineTextSemantics = [
+        createExplain("<abbr>", "Defines an abbreviation or acronym"),
+        createExplain("<cite>", "Defines the title of a work"),
+        createExplain("<code>", "Defines a piece of computer code, displayed with monospace font"),
+        createExplain("<q>", "Defines a short inline quotation"),
+        createExplain("<samp>", "Defines quoted sample output from a computer program"),
+        createExplain("<time datetime=\"2008-02-14 20:00\">", "Denotes text as a date/time"),
+        createExplain("<var>", "Defines an inline variable"),
+        createExplain("<wbr>", "Defines a word break")
+    ]
+    let contentheader_semanticTags_lessUsedInlineTextContent = createSectionHeader("Less Used Inline Text Content")
+    let content_semanticTagsArr_lessUsedInlineTextContent = [
+        createExplain("<bdi>", "Isolates a part of text that might be formatted in a different direction"),
+        createExplain("<bdo>", "Overrides the current text direction"),
+        createExplain("<data>", "Links a given piece of content with data specified in the 'value' attribute, which can be used by search engines and scripts."),
+        createExplain("<dfn>", "Defines a term that is to be rendered as a definition"),
+        createExplain("<kbd>", "Defines keyboard input.  displayed with monospace font")
+    ]
+    let contentheader_semanticTags_imageContent = createSectionHeader("Image Content")
+    let content_semanticTagsArr_imageContent = [
+        createExplain("<figure>", "Used to group images and captioned text"),
+        createExplain("<figcaption>", "Caption for an image"),
+        createExplain("<map>", "Used to define client-side image maps"),
+        createExplain("<area>", "Allows geometric areas in an image map to be clickable")
+    ]
+    let contentheader_semanticTags_functionalImageTags = createSectionHeader("Functional Image Tags")
+    let content_semanticTagsArr_functionalImageTags = [
+        createExplain("<map>", "Used to define client-side image maps"),
+        createExplain("<area>", "Allows geometric areas in an image map to be clickable")
+    ]
+    let contentheader_semanticTags_groupingContent = createSectionHeader("Grouping Content")
+    let content_semanticTagsArr_groupingContent = [
+        createExplain("<div>", "Generic container."),
+        createExplain("<span>", "Inline container for text or elements.")
+    ]
+
+    let mathMLEg = `<math>
+    <mrow>
+        <mrow>
+            <msup>
+                <mi>x</mi>
+                <mn>2</mn>
+            </msup>
+            <mo>+</mo>
+            <msup>
+                <mi>y</mi>
+                <mn>2</mn>
+            </msup>
+        </mrow>
+        <mo>=</mo>
+        <msup>
+            <mi>z</mi>
+            <mn>2</mn>
+        </msup>
+    </mrow>
+</math>`
+
+    let contentheader_misc = createSectionHeader("Misc")
+    let content_mathML = createPanelPair(
+        [
+            createExplain("<math>", "Container to display mathematical notation (MATHML) like x^2 + y^2 = z^2"),
+                create_hljs_syntaxHighlightCode(mathMLEg, 'xml')
+        ],
+        [
+            createRealHTML(mathMLEg)
+        ]
+    )
+
+
+let content_ALL = [
+    contentheader_htmlbasics,
+    content_htmlbasicstructure,
+    content_h1to6,
+    content_para,
+    content_br,
+    content_hr,
+    content_comment,
+    contentheader_textformatting,
+    ...newcontent_textFormatting,
+    content_ul,
+    content_ol,
+    content_dl,
+    contentheader_linksAndMedia,
+    content_a,
+    content_img,
+    content_audio,
+    content_video,
+    contentheader_tables,
+    content_table,
+    contentheader_forms,
+    content_forms,
+    content_forms2,
+    content_forms3,
+    content_forms4,
+    contentheader_semanticTags,
+    contentheader_semanticTags_sectioningAndLayout,
+    ...content_semanticTagsArr_sectioningAndLayout,
+    contentheader_semanticTags_blockTextContent,
+    ...content_semanticTagsArr_blockTextContent,
+    contentheader_semanticTags_inlineTextSemantics,
+    ...content_semanticTagsArr_inlineTextSemantics,
+    contentheader_semanticTags_lessUsedInlineTextContent,
+    ...content_semanticTagsArr_lessUsedInlineTextContent,
+    contentheader_semanticTags_imageContent,
+    ...content_semanticTagsArr_imageContent,
+    contentheader_semanticTags_functionalImageTags,
+    ...content_semanticTagsArr_functionalImageTags,
+    contentheader_semanticTags_groupingContent,
+    ...content_semanticTagsArr_groupingContent,
+    contentheader_misc,
+    content_mathML
+]
+
+    contentCenter.append(...content_ALL)
+
+
+setupAside()
+    
+    // hljs.configure({
+    //     languages: ['xml, html, css, js']
+    // })
+    // hljs.highlightAll()
+
+
+
+</script>
+
+</html>
